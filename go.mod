@@ -1,4 +1,4 @@
-module github.com/kirecek/terratest-helpers
+module github.com/kirecek/terrahelp
 
 go 1.15
 
