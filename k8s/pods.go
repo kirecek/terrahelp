@@ -14,11 +14,11 @@ import (
 
 // GetPodBySelector returns Pod object specified by selector string. The getter return only the first matched pod
 // and always waits till pod is available.
-func GetPodBySelector(t *testing.T, kubectlOptions *k8s.KubectlOptions, namespace, selector string) corev1.Pod {
+func GetPodBySelector(t *testing.T, options *k8s.KubectlOptions, selector string) corev1.Pod {
 	var pods []corev1.Pod
 	retry.DoWithRetry(t, fmt.Sprintf("Waiting for pod matching filter '%s'", selector), 5, 5*time.Second, func() (string, error) {
 		var err error
-		pods, err = k8s.ListPodsE(t, kubectlOptions, metav1.ListOptions{LabelSelector: selector})
+		pods, err = k8s.ListPodsE(t, options, metav1.ListOptions{LabelSelector: selector})
 		if err != nil {
 			return "", err
 		}
@@ -37,7 +37,7 @@ func GetPodBySelector(t *testing.T, kubectlOptions *k8s.KubectlOptions, namespac
 		require.Equal(t, p.Spec.Containers[0].Image, image, fmt.Sprintf("Ambiguous slector %s. Slector must target pods only from one deploy/sts/ds.", selector))
 	}
 
-	k8s.WaitUntilPodAvailable(t, kubectlOptions, pod.Name, 10, 5*time.Second)
+	k8s.WaitUntilPodAvailable(t, options, pod.Name, 10, 5*time.Second)
 
 	return pod
 }
